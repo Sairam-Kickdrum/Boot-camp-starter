@@ -1,0 +1,9 @@
+# Boot camp cohort roster
+# Columns: name, email, role
+# role must be "user" or "admin" — admin grants access to admin-only API routes.
+# Facilitators/coaches should be listed as admin.
+name,email,role
+Alice Smith,alice.smith@kickdrumtech.com,user
+Bob Jones,bob.jones@kickdrumtech.com,user
+Carol White,carol.white@kickdrumtech.com,user
+Dave Mentor,dave.mentor@kickdrumtech.com,admin

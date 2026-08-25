@@ -1,0 +1,53 @@
+{
+  "name": "boot-camp-starter",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20",
+    "npm": ">=9"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "playwright test",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx db/seed/index.ts",
+    "db:studio": "drizzle-kit studio",
+    "cdk:synth": "cd infra/cdk && npx cdk synth --all --quiet",
+    "cohort:provision": "tsx scripts/cohort/provision.ts",
+    "cohort:list": "tsx scripts/cohort/list.ts",
+    "cohort:reset": "tsx scripts/cohort/reset-password.ts",
+    "cohort:teardown": "tsx scripts/cohort/teardown.ts",
+    "cohort:create-tickets": "tsx scripts/cohort/create-exercise-tickets.ts"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.0.0",
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.0.0 || ^24.0.0",
+    "concurrently": "^8.2.0",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "tsx": "^4.15.0",
+    "typescript": "^5.5.0",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.2",
+    "fastify": "5.8.5",
+    "vite": "8.0.14"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "@boot-camp/config/tsconfig/node",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "../../..",
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  },
+  "include": ["src", "../../../db"],
+  "exclude": ["node_modules", "dist"]
+}
