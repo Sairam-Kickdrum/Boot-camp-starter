@@ -1,0 +1,8 @@
+{
+  "meeting-10hJKmQWvv7dnO5gofMQ-4uZXlkR57Mv5vnsrVr-w2sM-2026-08-26T06-03-10-062Z": {
+    "status": "not_relevant",
+    "processed_at": "2026-08-26T06:03:10.062Z",
+    "reason": "Transcript is explicitly titled and framed as the 'KDU Flux hotel-booking application' product review (see opening line: 'This meeting is about the KDU Flux hotel-booking application'). WIKI_PROJECT_NAME is 'Boot-Camp' (aliases: 'boot-camp-starter') and neither name nor alias appears anywhere in the transcript. Attendees (Sairam, Anika, Ravi, Maya) have no corroborating tie to this repo beyond a coincidental GitHub org name match. Domain similarity (room/hotel booking) alone is not sufficient signal per wiki-relevance-checker.md — confidence scored well below the 0.55 threshold.",
+    "confidence": 0.15
+  }
+}
