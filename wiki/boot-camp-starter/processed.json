@@ -1,0 +1,9 @@
+{
+  "meeting-1J33imcm9Tgi_oQ4ma2RqOcKsLWhWwVlheASzhj6PtEI-2026-08-26T04-40-44-154Z": {
+    "status": "not_relevant",
+    "processed_at": "2026-08-26",
+    "source": "local",
+    "confidence": 0.1,
+    "reason": "Transcript explicitly self-identifies at its start as being about the 'KDU Flux hotel-booking application' (a distinct, named product), and never mentions 'Boot-Camp' or 'boot-camp-starter' anywhere. Surface-level domain overlap (booking cancellation, confirmed/cancelled status, service/repository/route layering) mirrors this teaching repo's generic booking-app shape but is not evidence of shared identity."
+  }
+}
