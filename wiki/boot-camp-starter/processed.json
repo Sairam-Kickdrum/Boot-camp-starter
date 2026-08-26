@@ -4,5 +4,11 @@
     "processed_at": "2026-08-26T06:03:10.062Z",
     "reason": "Transcript is explicitly titled and framed as the 'KDU Flux hotel-booking application' product review (see opening line: 'This meeting is about the KDU Flux hotel-booking application'). WIKI_PROJECT_NAME is 'Boot-Camp' (aliases: 'boot-camp-starter') and neither name nor alias appears anywhere in the transcript. Attendees (Sairam, Anika, Ravi, Maya) have no corroborating tie to this repo beyond a coincidental GitHub org name match. Domain similarity (room/hotel booking) alone is not sufficient signal per wiki-relevance-checker.md — confidence scored well below the 0.55 threshold.",
     "confidence": 0.15
+  },
+  "meeting-1ZJ7Sb4VtzdJavq55cBYP9-m2v9aIqIQt7iaQ_5Blef0-2026-08-26T07-30-00-524Z": {
+    "status": "done",
+    "processed_at": "2026-08-26T07:30:00.524Z",
+    "reason": "Transcript explicitly names the project ('This meeting is about the Boot-Camp hotel-booking application, also known as boot-camp-starter' and 'Project: Boot-Camp (boot-camp-starter)'). Produced 9 decisions (DEC-0001 through DEC-0009) all mapped to a newly created feature request, booking-cancellation.",
+    "confidence": 0.97
   }
 }
