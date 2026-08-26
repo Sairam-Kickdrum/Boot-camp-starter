@@ -41,6 +41,7 @@ No cancellation capability exists yet — this is a new feature request. As scop
 | 2026-08-25 | [Cancellation reuses existing booking infrastructure](../../decisions/DEC-0007_reuse-existing-booking-infrastructure.md) | decided | Draft (pending) |
 | 2026-08-25 | [Open UX/copy questions for the cancellation flow](../../decisions/DEC-0008_open-ux-copy-questions.md) | unresolved | Draft (pending) |
 | 2026-08-25 | [Cancellation scope excludes refunds, policy windows, notifications, hard delete, undo, and admin cancellation](../../decisions/DEC-0009_cancellation-scope-exclusions.md) | rejected | Draft (pending) |
+| 2026-08-26 | [Whether DEC-0009's scope exclusions need dedicated negative-test coverage](../../decisions/DEC-0010_scope-exclusions-test-coverage-question.md) | unresolved | [Linear](https://linear.app/sairam-workspace/issue/ECT-62/dec-0009-cancellation-scope-excludes-refunds-policy-windows) |
 
 ## Evidence
 - [DEC-0001](../../decisions/DEC-0001_booking-cancellation-soft-delete.md)
@@ -52,6 +53,7 @@ No cancellation capability exists yet — this is a new feature request. As scop
 - [DEC-0007](../../decisions/DEC-0007_reuse-existing-booking-infrastructure.md)
 - [DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md)
 - [DEC-0009](../../decisions/DEC-0009_cancellation-scope-exclusions.md)
+- [DEC-0010](../../decisions/DEC-0010_scope-exclusions-test-coverage-question.md)
 
 ## Open Questions
 - Is `booking-cancellation` the right feature request for this work, or does it belong to an existing one? Created by an agent from ticket `boot-camp-booking-cancellation-review-3` (local wiki-ingest run); rename or merge if wrong.
@@ -60,6 +62,7 @@ No cancellation capability exists yet — this is a new feature request. As scop
 - What exact inline message should users see for a past or current check-in date? ([DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md))
 - Should the Cancel button label be "Cancel" or "Cancel booking"? ([DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md))
 - Should the confirmation modal have a secondary button labelled "Keep booking" or "Close"? ([DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md))
+- Should the DEC-0009 exclusions (no refund calc, no notification, no hard delete, no undo, no admin-cancel) get dedicated negative-assertion tests, or is the absence of the corresponding code sufficient acceptance evidence? ([DEC-0010](../../decisions/DEC-0010_scope-exclusions-test-coverage-question.md))
 
 **Resolved:**
 - Nothing recorded yet.
