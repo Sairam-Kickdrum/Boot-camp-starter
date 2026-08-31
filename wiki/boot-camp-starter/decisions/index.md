@@ -1,6 +1,6 @@
 # Decisions — Boot Camp Starter
 
-Last updated: 2026-08-26
+Last updated: 2026-08-31
 
 | ID | Date | Title | Type | Feature Request | Ticket |
 |---|---|---|---|---|---|
@@ -13,3 +13,4 @@ Last updated: 2026-08-26
 | [DEC-0007](DEC-0007_reuse-existing-booking-infrastructure.md) | 2026-08-25 | Cancellation reuses existing booking infrastructure | decided | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | Draft (pending) |
 | [DEC-0008](DEC-0008_open-ux-copy-questions.md) | 2026-08-25 | Open UX/copy questions for the cancellation flow | unresolved | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | Draft (pending) |
 | [DEC-0009](DEC-0009_cancellation-scope-exclusions.md) | 2026-08-25 | Cancellation scope excludes refunds, policy windows, notifications, hard delete, undo, and admin cancellation | rejected | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | Draft (pending) |
+| [DEC-0010](DEC-0010_cancellation-policy-acknowledgement-rejected-mismatch.md) | 2026-08-31 | Cancellation policy acknowledgement ticket rejected as codebase mismatch | rejected | [cancellation-policy-acknowledgement](../feature-requests/cancellation-policy-acknowledgement/feature-request.md) | [ECT-37](https://linear.app/sairam-workspace/issue/ECT-37/dec-0001-cancellation-policy-acknowledgement-at-checkout) |
