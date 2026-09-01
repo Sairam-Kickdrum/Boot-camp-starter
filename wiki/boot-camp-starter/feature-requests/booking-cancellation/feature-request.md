@@ -4,7 +4,7 @@ slug: booking-cancellation
 owners:
   - Sairam (Product Owner)
 status: active
-last_updated: 2026-08-26
+last_updated: 2026-09-01
 proposed_by: agent
 identity_confirmed: false
 ---
@@ -41,6 +41,7 @@ No cancellation capability exists yet — this is a new feature request. As scop
 | 2026-08-25 | [Cancellation reuses existing booking infrastructure](../../decisions/DEC-0007_reuse-existing-booking-infrastructure.md) | decided | Draft (pending) |
 | 2026-08-25 | [Open UX/copy questions for the cancellation flow](../../decisions/DEC-0008_open-ux-copy-questions.md) | unresolved | Draft (pending) |
 | 2026-08-25 | [Cancellation scope excludes refunds, policy windows, notifications, hard delete, undo, and admin cancellation](../../decisions/DEC-0009_cancellation-scope-exclusions.md) | rejected | Draft (pending) |
+| 2026-09-01 | [ECT-59 implementation-scope open questions for DEC-0006](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md) | unresolved | [Linear](https://linear.app/sairam-workspace/issue/ECT-59/dec-0006-frontend-cancel-action-visibility-and-inline-error-handling) |
 
 ## Evidence
 - [DEC-0001](../../decisions/DEC-0001_booking-cancellation-soft-delete.md)
@@ -52,6 +53,7 @@ No cancellation capability exists yet — this is a new feature request. As scop
 - [DEC-0007](../../decisions/DEC-0007_reuse-existing-booking-infrastructure.md)
 - [DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md)
 - [DEC-0009](../../decisions/DEC-0009_cancellation-scope-exclusions.md)
+- [DEC-0010](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md)
 
 ## Open Questions
 - Is `booking-cancellation` the right feature request for this work, or does it belong to an existing one? Created by an agent from ticket `boot-camp-booking-cancellation-review-3` (local wiki-ingest run); rename or merge if wrong.
@@ -60,6 +62,11 @@ No cancellation capability exists yet — this is a new feature request. As scop
 - What exact inline message should users see for a past or current check-in date? ([DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md))
 - Should the Cancel button label be "Cancel" or "Cancel booking"? ([DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md))
 - Should the confirmation modal have a secondary button labelled "Keep booking" or "Close"? ([DEC-0008](../../decisions/DEC-0008_open-ux-copy-questions.md))
+- Is ECT-59 scoped to implement only the DEC-0006 slice (frontend visibility/error-handling), or does it own the full end-to-end cancellation flow (DEC-0002/0003/0004/0005/0007 as well)? ([DEC-0010](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md))
+- Should ECT-59 block until a sibling ticket delivers the cancel API, or be built/tested against a stub in the meantime? ([DEC-0010](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md))
+- What should the UI do while a cancel request is in flight (disabled/loading Cancel button, modal close timing), and what is explicitly out of scope for ECT-59? ([DEC-0010](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md))
+- Should the inline cancellation error be shown per-row or as a single page-level message? ([DEC-0010](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md))
+- Should the inline error message text vary by status code (409/403/404), or is one generic message acceptable? ([DEC-0010](../../decisions/DEC-0010_ect-59-implementation-scope-open-questions.md))
 
 **Resolved:**
 - Nothing recorded yet.
