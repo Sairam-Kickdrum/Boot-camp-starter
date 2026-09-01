@@ -1,6 +1,6 @@
 # Decisions — Boot Camp Starter
 
-Last updated: 2026-08-26
+Last updated: 2026-09-01
 
 | ID | Date | Title | Type | Feature Request | Ticket |
 |---|---|---|---|---|---|
@@ -13,3 +13,4 @@ Last updated: 2026-08-26
 | [DEC-0007](DEC-0007_reuse-existing-booking-infrastructure.md) | 2026-08-25 | Cancellation reuses existing booking infrastructure | decided | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | Draft (pending) |
 | [DEC-0008](DEC-0008_open-ux-copy-questions.md) | 2026-08-25 | Open UX/copy questions for the cancellation flow | unresolved | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | Draft (pending) |
 | [DEC-0009](DEC-0009_cancellation-scope-exclusions.md) | 2026-08-25 | Cancellation scope excludes refunds, policy windows, notifications, hard delete, undo, and admin cancellation | rejected | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | Draft (pending) |
+| [DEC-0010](DEC-0010_ect-59-implementation-scope-open-questions.md) | 2026-09-01 | ECT-59 implementation-scope open questions for DEC-0006 | unresolved | [booking-cancellation](../feature-requests/booking-cancellation/feature-request.md) | [ECT-59](https://linear.app/sairam-workspace/issue/ECT-59/dec-0006-frontend-cancel-action-visibility-and-inline-error-handling) |
