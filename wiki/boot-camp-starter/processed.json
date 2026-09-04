@@ -16,5 +16,11 @@
     "processed_at": "2026-09-04T09:39:02.071Z",
     "reason": "Transcript title explicitly names 'Boot-camp-starter' and attendee Sairam Konda references this codebase's BookingRepository.hasConflict directly. Produced 7 decisions (DEC-0010 through DEC-0016): 3 decided and 2 unresolved mapped to a newly created feature request recurring-bookings, 1 unresolved mapped to a newly created feature request room-capacity-enforcement, and 1 rejected with feature: null. DEC-0014 surfaced an unresolved contradiction against DEC-0002 (ownership-based cancellation eligibility), routed to the unresolved branch per operator instructions.",
     "confidence": 0.95
+  },
+  "meeting-1EGkK5GKFYmt6UmFcNS98TNhyq3TZ4QTzQ23GuTrSZCI-2026-09-04T09-39-05-312Z": {
+    "status": "done",
+    "processed_at": "2026-09-04T09:39:05.312Z",
+    "reason": "Same Drive file id (1EGkK5GKFYmt6UmFcNS98TNhyq3TZ4QTzQ23GuTrSZCI) and identical content to the meeting already processed at 2026-09-04T09:39:02.071Z, re-exported 3 seconds later under a new filename/timestamp. Relevant (confidence 0.95, same signal as the prior run). Summarizer extracted the same 7 discussion items; wiki-conflict-detector.md found each existed_before against DEC-0010 through DEC-0016 with no material difference, reconciling all 7 to type duplicate. Per wiki-writer.md's skip condition, wrote no decision files, no feature-request edits, and no index updates — 0 new decisions, 0 tickets.",
+    "confidence": 0.95
   }
 }
