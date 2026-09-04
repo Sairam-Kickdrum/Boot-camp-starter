@@ -10,5 +10,11 @@
     "processed_at": "2026-08-26T07:30:00.524Z",
     "reason": "Transcript explicitly names the project ('This meeting is about the Boot-Camp hotel-booking application, also known as boot-camp-starter' and 'Project: Boot-Camp (boot-camp-starter)'). Produced 9 decisions (DEC-0001 through DEC-0009) all mapped to a newly created feature request, booking-cancellation.",
     "confidence": 0.97
+  },
+  "meeting-1EGkK5GKFYmt6UmFcNS98TNhyq3TZ4QTzQ23GuTrSZCI-2026-09-04T09-39-02-071Z": {
+    "status": "done",
+    "processed_at": "2026-09-04T09:39:02.071Z",
+    "reason": "Transcript title explicitly names 'Boot-camp-starter' and attendee Sairam Konda references this codebase's BookingRepository.hasConflict directly. Produced 7 decisions (DEC-0010 through DEC-0016): 3 decided and 2 unresolved mapped to a newly created feature request recurring-bookings, 1 unresolved mapped to a newly created feature request room-capacity-enforcement, and 1 rejected with feature: null. DEC-0014 surfaced an unresolved contradiction against DEC-0002 (ownership-based cancellation eligibility), routed to the unresolved branch per operator instructions.",
+    "confidence": 0.95
   }
 }
