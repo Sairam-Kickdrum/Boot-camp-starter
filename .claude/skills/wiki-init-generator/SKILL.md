@@ -24,8 +24,9 @@ find wiki/{project-id} -maxdepth 2 -name "*.md" 2>/dev/null
 ```
 
 - If both come back populated (code-wiki has `Architecture`/`Features`/`Schemas`, wiki has
-  `index.md`/`feature-requests/index.md`/`decisions/index.md`), **stop** — tell the user both wikis
-  are already scaffolded and this is a one-time onboarding step, not a recurring one.
+  `index.md`/`feature-requests/index.md` — there is no `decisions/` tree in this wiki), **stop** —
+  tell the user both wikis are already scaffolded and this is a one-time onboarding step, not a
+  recurring one.
 - If only one is populated, skip straight to running the missing half (Step 3).
 - If neither is populated locally, also check the shared branch before assuming a fresh start (in
   case it scaffolded there but isn't merged/checked out here):

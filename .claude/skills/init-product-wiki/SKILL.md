@@ -1,6 +1,6 @@
 ---
 name: init-product-wiki
-description: One-time onboarding scaffold of the product-wiki directory structure — wiki/SCHEMA.md and wiki/{project-id}/ with index.md, feature-requests/index.md, and decisions/index.md — pushed as a PR to the project's repository. Creates structure only, no decision or feature-request content. Shares one branch/PR with /init-code-wiki so /wiki-ingest can later commit wiki content into the same PR.
+description: One-time onboarding scaffold of the product-wiki directory structure — wiki/SCHEMA.md and wiki/{project-id}/ with index.md and feature-requests/index.md — pushed as a PR to the project's repository. Creates structure only, no feature-request content. Shares one branch/PR with /init-code-wiki so /wiki-ingest can later commit wiki content into the same PR.
 disable-model-invocation: true
 allowed-tools:
   - Read
@@ -12,11 +12,16 @@ allowed-tools:
 # Init Product Wiki
 
 Scaffold the empty directory structure for a project's product wiki. **This skill only creates
-structure** — `wiki/SCHEMA.md` (the one static schema-definition file, written once) plus empty
-index files with header rows and no data. It never writes a `DEC-NNNN_<slug>.md` decision record
-or a `feature-requests/{feature-id}/feature-request.md` file — those are written later, by
-`/wiki-ingest` (the "temporal agent" — see `.claude/skills/wiki-ingest/SKILL.md`), the first time
-an actual meeting produces a decision or feature-request to record.
+structure** — `wiki/SCHEMA.md` (the one static schema-definition file, written once) plus an empty
+index file with header rows and no data. It never writes a
+`feature-requests/{feature-id}/feature-request.md` file — that's written later, by `/wiki-ingest`
+(the "temporal agent" — see `.claude/skills/wiki-ingest/SKILL.md`), the first time an actual
+meeting produces a feature-relevant fact to record.
+
+There is no decisions ledger in this wiki. A transcript-derived fact is written straight into the
+relevant feature's `feature-request.md` — current truth, not an append-only history — and git is
+the history mechanism for anything that later changes. See `wiki/SCHEMA.md`'s Step 5 content below
+for the full rationale.
 
 **This is a one-time onboarding step.** It runs once per project, ever — see the Guard below and
 `docs/ONBOARDING.md`, which points to this skill as part of first-time setup.
@@ -28,13 +33,11 @@ wiki/
 ├── SCHEMA.md
 └── {project-id}/
     ├── index.md
-    ├── feature-requests/
-    │   └── index.md
-    └── decisions/
+    └── feature-requests/
         └── index.md
 ```
 
-Nothing else. 
+Nothing else.
 
 ## 1. Guard — Has This Already Run?
 
@@ -47,9 +50,9 @@ Check the current branch's working tree first:
 find wiki/{project-id} -maxdepth 2 -name "*.md" 2>/dev/null
 ```
 
-If `index.md`, `feature-requests/index.md`, or `decisions/index.md` already exist for this
-`project-id`, **stop** — tell the user the product wiki was already scaffolded and this skill is a
-one-time onboarding step, not a recurring one.
+If `index.md` or `feature-requests/index.md` already exist for this `project-id`, **stop** — tell
+the user the product wiki was already scaffolded and this skill is a one-time onboarding step, not
+a recurring one.
 
 If nothing turns up locally, also check whether the shared scaffold branch has it already on the
 target repository, in case it exists there but hasn't been merged or checked out here. Resolve the
@@ -110,6 +113,13 @@ directly; there's no shared state to read or originate first.
 This file is not per-project — it's written once for the whole `wiki/` tree and every project
 under it follows the same schema. If `wiki/SCHEMA.md` already exists, skip this step entirely.
 
+**This template is not the enforcement point for the rules it states.** Because the file is written
+once per `wiki/` tree and this skill is a one-time scaffold (Step 1 stops if the project is already
+scaffolded), an edit here reaches new repositories only. The skills that actually write feature
+requests — `wiki-feature-onboarder.md`, `wiki-writer.md`, and `seed-wiki-content/SKILL.md` — carry
+the same rules themselves, so they apply whatever a target repo's committed `wiki/SCHEMA.md` happens
+to say. That duplication is deliberate; do not "tidy" it by deleting the rules from those skills.
+
 Write it with this exact content:
 
 ````markdown
@@ -127,34 +137,48 @@ architecture belongs; product-wiki pages never link into it.
 In production this is **one repo, one project, one wiki** — `wiki/{project-id}/` is one full
 instance of everything below.
 
+There is no decisions ledger here. Earlier versions of this wiki kept an immutable
+`decisions/DEC-*.md` ledger and linked every fact back to the record that established it. That's
+gone: every fact-bearing section below is current-state only, cited with its evidence inline, and
+simply overwritten when a later meeting changes it. Git is the history mechanism — `git log -p` on
+any `feature-request.md` shows every value a line ever held and when it changed — so nothing here
+needs to duplicate that inside the file itself.
+
 ---
 
-## Current-State vs. Immutable-Ledger Discipline
+## Current-State Discipline
 
-Two kinds of file live here, with opposite update rules.
+Every section in `feature-requests/{id}/feature-request.md` (Current State, Key Facts,
+Requirements, Business Rules, Open Questions, Risks / Rejected Approaches, Relationships)
+represents *today's truth*, not a history log. When a new meeting changes what's true, **replace or
+trim the stale line** — never just append forever. The one section that's append-mostly by nature
+is `## Risks / Rejected Approaches`: it's the record a later fact gets checked against before it's
+allowed to silently contradict a rejection (see `wiki-fact-classifier.md`'s rejected-approach
+check), so entries there aren't trimmed the way current-state facts are.
 
-**Immutable ledger** (`decisions/DEC-*.md`): write-once. Never edited except adding a single
-`superseded_by` field to an old decision when a later one explicitly supersedes it.
+Every fact bullet cites its evidence inline, not via a link to a separate record:
 
-**Current-state** (most of `feature-requests/{id}/feature-request.md`: Current State, Key Facts,
-Requirements, Business Rules, Open Questions, Risks, Relationships): represents *today's truth*,
-not a history log. When a decision changes what's true, replace or trim the stale line and link
-the `DEC-*` that changed it — never just append forever.
+```
+<fact> (per meeting <date>, "<verbatim quote>")
+```
 
-**Thin indexes** (`feature-request.md`'s `## Decisions`/`## Evidence` sections,
-`feature-requests/index.md`, `decisions/index.md`): links and one-line pointers only. Never
-restate a decision's `## Statement` in one of these — link to it instead.
+When a ticket is created from a fact, the link attaches to that same bullet:
+
+```
+<fact> (per meeting <date>, "<verbatim quote>") — [Linear](<url>)
+```
 
 ---
 
 ## Slug & ID Formats
 
-- Decision IDs: `DEC-NNNN`, sequential, zero-padded, per-project. Scan `decisions/DEC-*.md` for
-  the current max and increment — never reuse or renumber once assigned. Filename is
-  `DEC-NNNN_<kebab-case-slug-from-title>.md`; the `DEC-NNNN` prefix is what's authoritative for
-  cross-references, the slug is a cosmetic, one-time label.
-- Feature-request IDs: kebab-case, short, stable (e.g. `billing-export`). Treat renaming one as a
-  breaking change to every link pointing at `feature-requests/{id}/`.
+- Feature-request ids: `FR-NNNN`, sequential, zero-padded, per-project. Scan existing
+  `feature-request.md` frontmatter for the current max `feature_id` and increment — never reuse or
+  renumber once assigned. This id is stable and separate from `slug`; renaming a feature changes
+  `slug`, never `feature_id`.
+- `slug`: kebab-case, short, stable in practice but *can* change on a deliberate rename — treat
+  renaming one as a breaking change to every link pointing at `feature-requests/{slug}/`, and
+  update `dependencies`/`conflicts` entries elsewhere that reference the old slug.
 
 ---
 
@@ -168,30 +192,37 @@ A short entry point that links out, not a raw content dump:
 Last updated: <date>
 
 - [Feature Requests](feature-requests/index.md) — what this project does, organized by capability
-- [Decisions](decisions/index.md) — the full project-wide decision ledger
 ```
 
 ---
 
 ## `feature-requests/` — feature-request tree
 
-One directory per feature request, created the first time a decision is confidently mapped to
-it. Everything about a feature request lives in one file, `feature-request.md` — not split
-across separate files.
+One directory per feature request, created the first time a fact is confidently mapped to it.
+Everything about a feature request lives in one file, `feature-request.md` — not split across
+separate files.
 
 ### `feature-requests/index.md` — feature-request catalog
 
 The first place to look to see "what does this project do" — one row per known feature request,
-mapping to its `feature-requests/{feature-id}/feature-request.md`:
+sourced from each FR's own frontmatter (`feature_id`, `title`, `domain`, `description`), plus a
+generated dependency/conflict view. Never hand-typed beyond the header — regenerated whenever a
+row's source frontmatter changes:
 
 ```markdown
 # Feature Requests — <Project Name>
 
 Last updated: <date>
 
-| Feature Request | Summary | Status | Open Questions | Last Touched |
-|---|---|---|---|---|
-| [billing-export](billing-export/feature-request.md) | Billing export job and its trigger | active | 0 | <date> |
+| ID | Feature Request | Domain | Summary | Status | Open Questions | Last Touched |
+|---|---|---|---|---|---|---|
+| [FR-0001](billing-export/feature-request.md) | Billing Export | billing | Billing export job and its trigger | active | 0 | <date> |
+
+## Dependency Graph
+*Generated from every FR's `dependencies`/`conflicts` frontmatter — never hand-edited.*
+
+- **FR-0001 (Billing Export)** depends on **FR-0002 (Invoice Numbering)**
+- No conflicts currently recorded
 ```
 
 ### `feature-requests/{feature-id}/feature-request.md`
@@ -204,6 +235,22 @@ under review** until a human merges its pull request and clears
 feature request are unconfirmed", and expect the reason to be stated in its `## Open
 Questions`. Never delete the question to tidy the file — answer it, then set the flag.
 
+**Write this file in product language, not technical language.** `## Current State`,
+`## Key Facts`, `## Requirements` and `## Business Rules` are the four sections a Linear ticket is
+built from, and they are read by product managers and business stakeholders. Describe screens,
+user-visible workflows and business rules: what a person is trying to do, what they see, and what
+the product must guarantee.
+
+**Those four sections may not name a file, directory, function, class, method, module, package,
+database table, column, environment variable, or any other code identifier.** Naming a product
+surface is required — "the booking cancellation screen", "the checkout flow", "the invitation
+email". Naming code is forbidden. If a requirement can only be expressed by naming code, it is a
+statement about the implementation and does not belong in a feature request: the technical
+approach is derived later, from the codebase itself, by whoever implements it.
+
+`## Relationships` is unaffected by this — a feature-request id is a wiki reference, not a code
+identifier.
+
 Everything from the `---` below to the end of this block is the template itself — copy the
 structure, not this paragraph.
 
@@ -211,10 +258,16 @@ structure, not this paragraph.
 ---
 title: "Billing Export"
 slug: billing-export
+feature_id: FR-0001    # stable id, separate from slug — assigned once, never renumbered
+description: "One canonical sentence describing what this feature request is."
+domain: billing         # one business-domain label
+aliases: []             # nicknames this feature gets called informally in meetings
 owners:
   - <owner name>
 status: active   # active | deprecated
 last_updated: <date>
+dependencies: []        # feature-request ids this one depends on (outgoing edges only)
+conflicts: []           # feature-request ids this one is in tension with (always mirrored both ways)
 # Both optional, and both only ever set by an agent creating this file headlessly
 # (see wiki-feature-onboarder.md's "Non-interactive runs"). Absent means a human
 # authored it — do not add them to a human's own feature request.
@@ -224,124 +277,64 @@ identity_confirmed: false   # true once a human has confirmed this is the right
 ---
 
 ## Current State
-<Plain-language description of how this feature request works TODAY. Rewrite/trim as decisions
-change it — not a running log of everything ever said about it.>
+<Plain-language description of how this feature request works TODAY, cited with its evidence
+inline: "<fact> (per meeting <date>, "<quote>")". Rewrite/trim as later meetings change it — not a
+running log of everything ever said about it.>
 
 ## Key Facts
-- <Fact that holds today, linked to the DEC-NNNN that established it>
+- <Fact that holds today> (per meeting <date>, "<quote>")
 
 ## Requirements
-- <Requirement that holds today, linked to the DEC-NNNN that established it>
+- <Requirement that holds today> (per meeting <date>, "<quote>")
 
 ## Business Rules
-- <Rule that holds today, linked to the DEC-NNNN that established it>
-
-## Decisions
-| Date | Title | Type | Ticket |
-|---|---|---|---|
-| <date> | [Title](../../decisions/DEC-NNNN_<slug>.md) | decided | [Linear](<url>) |
+- <Rule that holds today> (per meeting <date>, "<quote>") — [Linear](<url>)   <!-- ticket link only if one was created from this fact -->
 
 ## Evidence
-- [DEC-NNNN](../../decisions/DEC-NNNN_<slug>.md)
+- [Feat-NNNN-<feature-id>](../../../code-wiki/{project-id}/Features/Feat-NNNN-<feature-id>/Index.md)
 
-Links only, to `decisions/DEC-*.md` — never a copied excerpt of the transcript. The verbatim
-quote already lives on the Decision Record's `evidence_quote` field; there is no separate
-meeting page to link to instead (see "No Local Meeting Archive" below).
+The one link-only section kept from the old schema — not a decisions index, but the FR ↔ FEAT
+bridge to this feature's code-wiki twin (see `wiki-bridge-verifier.md`). Omit entirely, with a
+one-line note instead ("No codebase-wiki page exists — this feature isn't built yet."), when
+nothing is built yet.
 
 ## Open Questions
-- <Unresolved question>
+- <Unresolved question> (raised in meeting <date>: "<quote>")
 
 **Resolved:**
-- ~~<Former question>~~ → resolved by [DEC-NNNN](../../decisions/DEC-NNNN_<slug>.md)
+- ~~<Former question>~~ → resolved per meeting <date> (<what it resolved to>)
 
 ## Risks / Rejected Approaches
-- <Rejected approach or known risk, linked to the DEC-* that recorded it>
+- Rejected: <approach> — <why> (per meeting <date>, "<quote>")
 
 ## Relationships
-**Depends On:** <feature-id> — <one-line reason, linked to the DEC that established it>
-**Related:** <feature-id> — <one-line reason>
+**Depends On:** [<feature-id>](../<feature-id>/feature-request.md) — <one-line reason>
+**Conflicts With:** [<feature-id>](../<feature-id>/feature-request.md) — <one-line reason>
 ```
 
 Every section heading stays present even when empty — write "Nothing recorded yet." rather than
-omitting it, so the next write has an obvious place to land. `## Decisions` and `## Evidence` are
-thin indexes (links only); every other section is current-state.
-
----
-
-## `decisions/` — canonical, project-wide decision ledger
-
-The durable memory that answers "was this already decided / rejected / does it contradict
-something" — project-wide, not per-feature-request, since two different feature requests can
-still contradict or duplicate each other.
-
-### `decisions/index.md` — flat ledger index
-
-```markdown
-# Decisions — <Project Name>
-
-Last updated: <date>
-
-| ID | Date | Title | Type | Feature Request | Ticket |
-|---|---|---|---|---|---|
-| [DEC-0001](DEC-0001_<slug>.md) | <date> | <title> | decided | [billing-export](../feature-requests/billing-export/feature-request.md) | [Linear](<url>) |
-```
-
-### `decisions/DEC-NNNN_<slug>.md` — one file per decision
-
-One file per discussion item classified as Decided, Unresolved, Rejected, or Superseded. The
-only classification that produces **no file** is `duplicate` — a reconciliation outcome (not a
-classifier output) meaning this exact thing, with the same type, already exists.
-
-```yaml
----
-title: "Short decision title"
-date: <date>
-id: DEC-0001
-feature: billing-export        # feature-request id, or null if no feature request matched
-source_meeting: <slug>          # a label, not a file — no local meeting page exists to name
-recording_id: <Drive file ID of the recording>    # this decision's only durable link back to the source meeting
-transcript_id: <Drive file ID of the transcript>
-type: decided                  # decided | unresolved | rejected | superseded
-evidence_quote: "The verbatim line this decision is grounded in"
-reconciliation:
-  existed_before: false
-  previously_rejected: false
-  contradicts: []               # DEC-ids this conflicts with, if any
-  on_roadmap: false
-  dependencies: []               # DEC-ids or ticket ids this depends on
-  changes_plan: false
-supersedes: []                  # DEC-ids — only meaningful when type: superseded
-linear_issue: null               # set to the issue URL once a real Linear ticket exists
----
-
-## Statement
-<The decision, one clear sentence>
-
-## Reconciliation Notes
-<1-3 sentences explaining why the reconciliation fields above were set the way they were>
-```
-
-**Status transitions**: a decision's `type` is never rewritten after creation except when a
-*later* decision explicitly supersedes it — the old file gets `superseded_by: DEC-000N` added
-(only then — it's absent otherwise, not pre-declared as `null`), the new file's
-`supersedes: [DEC-000N]` points back. History stays intact.
+omitting it, so the next write has an obvious place to land (`## Evidence` is the one exception:
+omit the heading entirely when nothing is built yet, per its own note above). `## Evidence` is a
+thin index — a link only, never a copied excerpt — to this feature's code-wiki twin.
+`## Relationships` is a generated rendering of the `dependencies`/`conflicts` frontmatter
+(`wiki-relationship-scanner.md` writes both together) — never hand-authored independently of the
+frontmatter it renders.
 
 ---
 
 ## No Local Meeting Archive
 
 There is no `archive/meetings/` directory and no per-meeting page under `wiki/{project-id}/`. A
-meeting is a source event, not a durable artifact — its evidence lives inline on whichever
-Decision Record(s) it produced (`recording_id`, `transcript_id`, `source_meeting`,
-`evidence_quote`), not as a separately rendered page. A meeting-archive page would just be a
-second copy of what the Decision Record and the feature's `## Key Facts` already hold.
+meeting is a source event, not a durable artifact — its evidence lives inline on whichever fact(s)
+it produced (the `(per meeting <date>, "<quote>")` citation), not as a separately rendered page. A
+meeting-archive page would just be a second copy of what the fact citation already holds.
 
 ## No Local Ticket Draft
 
-A decision never gets a local ticket file. There is no `triage/` directory: a local draft ticket
-would just duplicate content the Decision Record itself already holds (`## Statement`,
-`evidence_quote`, `reconciliation`). A decision links straight to its real Linear issue
-(`linear_issue`) once one exists; until then it leaves `linear_issue: null`.
+A fact never gets a local ticket file. There is no `triage/` directory: a local draft ticket would
+just duplicate content the fact bullet itself already holds. A ticket link attaches directly to the
+fact bullet it was created from once a real Linear issue exists; until then the bullet carries no
+ticket link at all.
 ````
 
 ## 6. Create `wiki/{project-id}/index.md`
@@ -352,7 +345,6 @@ would just duplicate content the Decision Record itself already holds (`## State
 Last updated: <date>
 
 - [Feature Requests](feature-requests/index.md) — what this project does, organized by capability
-- [Decisions](decisions/index.md) — the full project-wide decision ledger
 ```
 
 ## 7. Create `wiki/{project-id}/feature-requests/index.md`
@@ -364,36 +356,28 @@ Header row only — no feature requests exist yet:
 
 Last updated: <date>
 
-| Feature Request | Summary | Status | Open Questions | Last Touched |
-|---|---|---|---|---|
+| ID | Feature Request | Domain | Summary | Status | Open Questions | Last Touched |
+|---|---|---|---|---|---|---|
+
+## Dependency Graph
+*Generated from every FR's `dependencies`/`conflicts` frontmatter — never hand-edited.*
+
+Nothing recorded yet.
 ```
 
-## 8. Create `wiki/{project-id}/decisions/index.md`
-
-Header row only — no decisions exist yet:
-
-```markdown
-# Decisions — <Project Name>
-
-Last updated: <date>
-
-| ID | Date | Title | Type | Feature Request | Ticket |
-|---|---|---|---|---|---|
-```
-
-## 9. Confirm Before Pushing
+## 8. Confirm Before Pushing
 
 Before touching git history or opening/updating a PR, show the user:
 - the target repo (from Step 3) and branch name (`wiki/init-scaffold`, from Step 4)
 - exactly what's about to be committed (`wiki/SCHEMA.md` if newly written, the
   `wiki/{project-id}/` tree)
-- whether a PR will be **created** (no open PR found for this branch — see Step 11) or an existing
+- whether a PR will be **created** (no open PR found for this branch — see Step 10) or an existing
   one will simply gain a new **commit** (a PR for this branch already exists)
 
 Get explicit go-ahead before proceeding — pushing and opening a PR are visible, shared-state
 actions.
 
-## 10. Branch, Commit, Push
+## 9. Branch, Commit, Push
 
 ```bash
 git fetch "$TARGET_REMOTE"
@@ -403,7 +387,7 @@ git commit -m "chore: scaffold product-wiki directory structure for {project-id}
 git push -u "$TARGET_REMOTE" wiki/init-scaffold
 ```
 
-## 11. Create or Reuse the PR
+## 10. Create or Reuse the PR
 
 Check GitHub directly for an existing open PR on this branch — this is the authoritative check,
 there's no local state file to consult:
@@ -418,8 +402,8 @@ gh pr list --repo "$REPO_SLUG" --head wiki/init-scaffold --state open --json url
   ```bash
   gh pr create --repo "$REPO_SLUG" --draft --title "Scaffold project wiki (code-wiki + product wiki)" --body "$(cat <<'EOF'
   ## Summary
-  - Scaffolds wiki/SCHEMA.md and wiki/{project-id}/ (index.md, feature-requests/index.md, decisions/index.md — structure only, no content)
-  - Long-lived scaffold PR: /wiki-ingest commits actual decisions/feature-requests here as they're written
+  - Scaffolds wiki/SCHEMA.md and wiki/{project-id}/ (index.md, feature-requests/index.md — structure only, no content)
+  - Long-lived scaffold PR: /wiki-ingest commits actual feature-request content here as it's written
   - Do not merge until the wiki has real content — this PR is the living wiki changeset
 
   🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -427,26 +411,26 @@ gh pr list --repo "$REPO_SLUG" --head wiki/init-scaffold --state open --json url
   )"
   ```
 
-## 12. Report
+## 11. Report
 
 Tell the user:
 - `wiki/SCHEMA.md` was created (or already existed and was left untouched)
-- `wiki/{project-id}/index.md`, `wiki/{project-id}/feature-requests/index.md`, and
-  `wiki/{project-id}/decisions/index.md` are scaffolded and pushed
+- `wiki/{project-id}/index.md` and `wiki/{project-id}/feature-requests/index.md` are scaffolded and
+  pushed
 - The PR URL (whether newly created or already existing)
-- No `DEC-*.md` or `feature-requests/{feature-id}/feature-request.md` files exist yet — those
-  get written by `/wiki-ingest` the first time an actual decision or feature request exists,
-  as additional commits on the same branch/PR
+- No `feature-requests/{feature-id}/feature-request.md` files exist yet — those get written by
+  `/wiki-ingest` the first time an actual feature-relevant fact exists, as additional commits on
+  the same branch/PR
 - This was a one-time onboarding step — running it again will stop at the Step 1 guard
 
 ---
 
 ## Rules
 
-- This skill never writes `decisions/DEC-*.md` or `feature-requests/{feature-id}/feature-request.md`
-  — that content-writing step belongs to `/wiki-ingest`, not this scaffold.
-- Never create `archive/meetings/` or `triage/` under `wiki/{project-id}/` — see the note at the
-  end of `wiki/SCHEMA.md` for why.
+- This skill never writes `feature-requests/{feature-id}/feature-request.md` — that
+  content-writing step belongs to `/wiki-ingest`, not this scaffold.
+- Never create `archive/meetings/`, `triage/`, or `decisions/` under `wiki/{project-id}/` — see
+  the notes at the end of `wiki/SCHEMA.md` for why. There is no decisions ledger in this wiki.
 - `wiki/SCHEMA.md` is written once for the whole `wiki/` tree, never per-project — check it
   doesn't already exist before writing it.
 - **One-time only.** Always check the working tree, and the shared branch if nothing's local,
@@ -456,5 +440,5 @@ Tell the user:
 - **The target repository is always this workspace's own `origin` remote** (Step 3) — resolve
   `$REPO_SLUG` from it and use `origin`, plus `gh --repo`, for every git/gh operation.
 - Never invent a git remote URL — if `origin` isn't configured, ask the user for it.
-- Always confirm with the user (Step 9) before pushing or creating a PR.
+- Always confirm with the user (Step 8) before pushing or creating a PR.
 - Never overwrite an existing `wiki/{project-id}/` — guard first, stop if content is already there.
